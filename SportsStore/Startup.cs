@@ -56,6 +56,8 @@ namespace SportsStore
                     // tells MVC to send requests to the List action method of the Product controller unless the request URL specifies otherwise
                     template: "{controller=Product}/{action=List}/{id?}");                
             });
+            //to seed the database when the application starts, which I have done by adding a call to the EnsurePopulated method from the Startup class
+            SeedData.EnsurePopulated(app); 
         }
     }
 }
