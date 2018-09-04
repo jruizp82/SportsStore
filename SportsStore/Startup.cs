@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using SportsStore.Models;
 
 namespace SportsStore
 {
@@ -16,6 +17,8 @@ namespace SportsStore
         // The ConfigureServices method is used to set up shared objects that can be used throughout the application through the dependency injection feature
         public void ConfigureServices(IServiceCollection services)
         {
+            // Tells ASP.NET Core that when a component, such as a controller, needs an implementation of the IProductRepository interface, it should receive an instance of the FakeProductRepository class. The AddTransient method specifies that a new FakeProductRepository object should be created each time the IProductRepository interface is needed.
+            services.AddTransient<IProductRepository, FakeProductRepository>();
             services.AddMvc(); // sets up the shared objects used in MVC applications
         }
 
