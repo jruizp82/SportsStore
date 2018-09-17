@@ -52,6 +52,11 @@ namespace SportsStore
             // The UseMvc method sets up the MVC middleware, and one of the configuration options is the scheme that will be used to map URLs to controllers and action method
             app.UseMvc(routes => {
                 routes.MapRoute(
+                    name: "pagination",
+                    template: "Products/Page{productPage}",
+                    defaults: new { Controller = "Product", action = "List" });
+
+                routes.MapRoute(
                     name: "default",
                     // tells MVC to send requests to the List action method of the Product controller unless the request URL specifies otherwise
                     template: "{controller=Product}/{action=List}/{id?}");                
