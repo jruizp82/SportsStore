@@ -10,9 +10,17 @@ namespace SportsStore.Controllers
     public class CartController : Controller
     {
         private IProductRepository repository;
-        public CartController(IProductRepository repo)
+        private Cart cart;
+
+        //The CartController class indicates that it needs a Cart object by declaring a constructor argument,
+        //which has allowed me to remove the methods that read and write data from the session and the steps
+        //required to write updates.The result is a controller that is simpler and remains focused on its role in the
+        //application without having to worry about how Cart objects are created or persisted. And, since services are
+        //available throughout the application, any component can get hold of the user’s cart using the same technique.
+        public CartController(IProductRepository repo, Cart cartService)
         {
             repository = repo;
+            cart = cartService;
         }
 
         //The Index action retrieves the Cart object from the session state and uses it to create a CartIndexView
@@ -21,7 +29,7 @@ namespace SportsStore.Controllers
         {
             return View(new CartIndexViewModel
             {
-                Cart = GetCart(),
+                Cart = cart,
                 ReturnUrl = returnUrl
             });
         }
@@ -37,9 +45,7 @@ namespace SportsStore.Controllers
 
             if (product != null)
             {
-                Cart cart = GetCart();
                 cart.AddItem(product, 1);
-                SaveCart(cart);
             }
 
             return RedirectToAction("Index", new { returnUrl });
@@ -52,40 +58,10 @@ namespace SportsStore.Controllers
 
             if (product != null)
             {
-                Cart cart = GetCart();
                 cart.RemoveLine(product);
-                SaveCart(cart);
             }
             return RedirectToAction("Index", new { returnUrl });
-        }
+        }      
 
-        //use the ASP.NET session state feature to store and retrieve Cart objects
-
-        //The HttpContext property is provided the Controller base class from which controllers are usually derived
-        //and returns an HttpContext object that provides context data about the request that has been received and the
-        //response that is being prepared.The HttpContext.Session property returns an object that implements the
-        //ISession interface, which is the type on which I defined the SetJson method, which accepts arguments that
-        //specify a key and an object that will be added to the session state.The extension method serializes the object and
-        //adds it to the session state using the underlying functionality provided by the ISession interface.
-
-        private Cart GetCart()
-        {
-            //To retrieve the Cart again
-            Cart cart = HttpContext.Session.GetJson<Cart>("Cart") ?? new Cart();
-            return cart;
-        }
-
-        private void SaveCart(Cart cart)
-        {
-            //To add a Cart to the session state in the controller
-            HttpContext.Session.SetJson("Cart", cart);
-        }
-
-        //The middleware that I registered in the previous section uses cookies or URL rewriting to associate multiple requests from a user
-        //together to form a single browsing session.A related feature is session state, which associates data with a
-        //session. This is an ideal fit for the Cart class: I want each user to have their own cart, and I want the cart to
-        //be persistent between requests.Data associated with a session is deleted when a session expires (typically
-        //because a user has not made a request for a while), which means that I do not need to manage the storage or
-        //life cycle of the Cart objects.
     }
 }
