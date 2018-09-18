@@ -23,10 +23,15 @@ namespace SportsStore.Controllers
         //update the List action method in the ProductController class to use the 
         //ProductsListViewModel class to provide the view with details of the products to display on the page and   
         //details of the pagination
-        public ViewResult List(int productPage = 1)
+
+        //to update the Product controller so that the List action method will filter Product objects by category and use the new property I added to the view
+        //model to indicate which category has been selected.
+        public ViewResult List(string category, int productPage = 1)
             => View(new ProductsListViewModel
             {
                 Products = repository.Products
+                    // if category is not null, only those Product objects with a matching Category property are selected.
+                    .Where(p => category == null || p.Category == category)
                     .OrderBy(p => p.ProductID)
                     .Skip((productPage - 1) * PageSize)
                     .Take(PageSize),
@@ -35,7 +40,8 @@ namespace SportsStore.Controllers
                     CurrentPage = productPage,
                     ItemsPerPage = PageSize,
                     TotalItems = repository.Products.Count()
-                }
+                },
+                CurrentCategory = category
             });
         //These changes pass a ProductsListViewModel object as the model data to the view.
 
