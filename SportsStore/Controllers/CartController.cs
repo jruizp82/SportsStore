@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SportsStore.Infrastructure;
 using SportsStore.Models;
+using SportsStore.Models.ViewModels;
+
 namespace SportsStore.Controllers
 {
     public class CartController : Controller
@@ -11,6 +13,17 @@ namespace SportsStore.Controllers
         public CartController(IProductRepository repo)
         {
             repository = repo;
+        }
+
+        //The Index action retrieves the Cart object from the session state and uses it to create a CartIndexView
+        //Model object, which is then passed to the View method to be used as the view model.
+        public ViewResult Index(string returnUrl)
+        {
+            return View(new CartIndexViewModel
+            {
+                Cart = GetCart(),
+                ReturnUrl = returnUrl
+            });
         }
 
         //For the AddToCart and RemoveFromCart action methods, I have used parameter names that match
