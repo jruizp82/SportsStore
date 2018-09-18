@@ -30,7 +30,7 @@ namespace SportsStore.Tests
             //objects, but I have wrapped that data inside another view model type.
             // Act            
             ProductsListViewModel result =
-                controller.List(2).ViewData.Model as ProductsListViewModel;
+                controller.List(null, 2).ViewData.Model as ProductsListViewModel;
 
             // Assert            
             Product[] prodArray = result.Products.ToArray();
@@ -58,7 +58,7 @@ namespace SportsStore.Tests
             
             // Act
             ProductsListViewModel result =
-                controller.List(2).ViewData.Model as ProductsListViewModel;
+                controller.List(null, 2).ViewData.Model as ProductsListViewModel;
             
             // Assert
             PagingInfo pageInfo = result.PagingInfo;
