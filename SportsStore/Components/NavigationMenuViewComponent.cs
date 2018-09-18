@@ -1,13 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SportsStore.Models;
+using System.Linq;
+
 namespace SportsStore.Components
 {
     public class NavigationMenuViewComponent : ViewComponent
     {
-        //The view component’s Invoke method is called when the component is used in a Razor view, and the
-        //result of the Invoke method is inserted into the HTML sent to the browser
-        public string Invoke()
+        private IProductRepository repository;
+
+        //defines an IProductRepository argument.When MVC needs to
+        //create an instance of the view component class, it will note the need to provide this argument and inspect
+        //the configuration in the Startup class to determine which implementation object should be used.
+        public NavigationMenuViewComponent(IProductRepository repo)
         {
-            return "Hello from the Nav View Component";
+            repository = repo;
+        }
+
+        //In the Invoke method, I use LINQ to select and order the set of categories in the repository and pass
+        //them as the argument to the View method, which renders the default Razor partial view, details of which
+        //are returned from the method using an IViewComponentResult object
+        public IViewComponentResult Invoke()
+        {
+            return View(repository.Products
+                .Select(x => x.Category)
+                .Distinct()
+                .OrderBy(x => x));
         }
     }
 }
