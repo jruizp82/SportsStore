@@ -33,6 +33,8 @@ namespace SportsStore
             // The components in the application that use the IProductRepository interface, which is just the Product controller at the moment, will receive an EFProductRepository object when they are created, which will provide them with access to the data in the database
             services.AddTransient<IProductRepository, EFProductRepository>();
             services.AddMvc(); // sets up the shared objects used in MVC applications
+            services.AddMemoryCache(); //call sets up the in-memory data store
+            services.AddSession(); //registers the services used to access session data
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +50,9 @@ namespace SportsStore
             // enables support for serving static content from the wwwroot folder, ej. pdf
             app.UseStaticFiles();
 
+            //allows the session system to automatically associate requests with sessions when they arrive from the client
+            app.UseSession();
+
             // enables ASP.NET Core MVC
             // The UseMvc method sets up the MVC middleware, and one of the configuration options is the scheme that will be used to map URLs to controllers and action method
 
@@ -56,7 +61,7 @@ namespace SportsStore
             ///Page2 Lists the specified page(in this case, page 2), showing items from all categories
             ///Soccer Shows the first page of items from a specific category(in this case, the Soccer category)
             ///Soccer/Page2 Shows the specified page(in this case, page 2) of items from the specified category (in this case, Soccer)
-             app.UseMvc(routes => {
+            app.UseMvc(routes => {
                 routes.MapRoute(
                     name: null,
                     template: "{category}/Page{productPage:int}",
