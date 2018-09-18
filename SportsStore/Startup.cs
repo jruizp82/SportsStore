@@ -50,16 +50,38 @@ namespace SportsStore
 
             // enables ASP.NET Core MVC
             // The UseMvc method sets up the MVC middleware, and one of the configuration options is the scheme that will be used to map URLs to controllers and action method
-            app.UseMvc(routes => {
+
+            //URL Leads To
+            ///Lists the first page of products from all categories
+            ///Page2 Lists the specified page(in this case, page 2), showing items from all categories
+            ///Soccer Shows the first page of items from a specific category(in this case, the Soccer category)
+            ///Soccer/Page2 Shows the specified page(in this case, page 2) of items from the specified category (in this case, Soccer)
+             app.UseMvc(routes => {
                 routes.MapRoute(
-                    name: "pagination",
-                    template: "Products/Page{productPage}",
-                    defaults: new { Controller = "Product", action = "List" });
+                    name: null,
+                    template: "{category}/Page{productPage:int}",
+                    defaults: new { controller = "Product", action = "List" }
+                );
 
                 routes.MapRoute(
-                    name: "default",
-                    // tells MVC to send requests to the List action method of the Product controller unless the request URL specifies otherwise
-                    template: "{controller=Product}/{action=List}/{id?}");                
+                    name: null,
+                    template: "Page{productPage:int}",
+                    defaults: new { controller = "Product", action = "List", productPage = 1 }
+                );
+
+                routes.MapRoute(
+                    name: null,
+                    template: "{category}",
+                    defaults: new { controller = "Product", action = "List", productPage = 1 }
+                );
+
+                routes.MapRoute(
+                    name: null,
+                    template: "",
+                    defaults: new { controller = "Product", action = "List", productPage = 1 }
+                );
+
+                routes.MapRoute(name: null, template: "{controller}/{action}/{id?}");
             });
             //to seed the database when the application starts, which I have done by adding a call to the EnsurePopulated method from the Startup class
             SeedData.EnsurePopulated(app); 
