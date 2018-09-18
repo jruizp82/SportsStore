@@ -32,6 +32,21 @@ namespace SportsStore
                     Configuration["Data:SportsStoreProducts:ConnectionString"]));
             // The components in the application that use the IProductRepository interface, which is just the Product controller at the moment, will receive an EFProductRepository object when they are created, which will provide them with access to the data in the database
             services.AddTransient<IProductRepository, EFProductRepository>();
+            
+            //The AddScoped method specifies that the same object should be used to satisfy related requests for Cart
+            //instances.How requests are related can be configured, but by default, it means that any Cart required by
+            //components handling the same HTTP request will receive the same object.
+            //Rather than provide the AddScoped method with a type mapping, as I did for the repository, I have
+            //specified a lambda expression that will be invoked to satisfy Cart requests.The expression receives the
+            //collection of services that have been registered and passes the collection to the GetCart method of the
+            //SessionCart class. The result is that requests for the Cart service will be handled by creating SessionCart
+            //objects, which will serialize themselves as session data when they are modified.
+            services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
+
+            //specifies that the same object should always be used. The service I created tells MVC to use the HttpContextAccessor class when
+            //implementations of the IHttpContextAccessor interface are required.This service is required so I can
+            //access the current session in the SessionCart class
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddMvc(); // sets up the shared objects used in MVC applications
             services.AddMemoryCache(); //call sets up the in-memory data store
             services.AddSession(); //registers the services used to access session data
