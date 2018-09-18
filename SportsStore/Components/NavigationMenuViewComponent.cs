@@ -21,6 +21,10 @@ namespace SportsStore.Components
         //are returned from the method using an IViewComponentResult object
         public IViewComponentResult Invoke()
         {
+            //Inside the Invoke method, I have dynamically assigned a SelectedCategory property to the ViewBag
+            //object and set its value to be the current category, which is obtained through the context object returned
+            //by the RouteData property.
+            ViewBag.SelectedCategory = RouteData?.Values["category"];
             return View(repository.Products
                 .Select(x => x.Category)
                 .Distinct()
