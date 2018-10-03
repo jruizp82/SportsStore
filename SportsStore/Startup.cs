@@ -47,6 +47,8 @@ namespace SportsStore
             //implementations of the IHttpContextAccessor interface are required.This service is required so I can
             //access the current session in the SessionCart class
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //registered the order repository as a service in the ConfigureServices method
+            services.AddTransient<IOrderRepository, EFOrderRepository>();
             services.AddMvc(); // sets up the shared objects used in MVC applications
             services.AddMemoryCache(); //call sets up the in-memory data store
             services.AddSession(); //registers the services used to access session data
